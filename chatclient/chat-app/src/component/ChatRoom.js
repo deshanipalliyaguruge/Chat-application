@@ -18,12 +18,14 @@ const ChatRoom = () => {
         console.log(userData);
     }, [userData]);
 
+    //Establishes a WebSocket connection to the server.
     const  connect = () => {
         let Sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(Sock);
         stompClient.connect({}, onConnected, onError);
     }
 
+    //Subscribes to public and private chat channels and sends a JOIN message.
     const onConnected = () => {
         setUserData({ ...userData, "connected": true });
         stompClient.subscribe('/chatroom/public', onMessageReceived);
@@ -31,6 +33,7 @@ const ChatRoom = () => {
         userJoin();
     }
 
+    //Sends a JOIN message to the public chat.
     const userJoin = () => {
         var chatMessage = {
             senderName: userData.username,
@@ -39,7 +42,7 @@ const ChatRoom = () => {
         stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
     }
     
-
+    //Handles incoming public messages, updates the public chat list or private chats map.
     const onMessageReceived = (payload) => {
         var payloadData = JSON.parse(payload.body);
         switch (payloadData.status) {
@@ -56,6 +59,7 @@ const ChatRoom = () => {
         }
     }
 
+    //Handles incoming private messages, updates the private chats map.
     const onPrivateMessage = (payload) => {
         console.log(payload);
         var payloadData = JSON.parse(payload.body);
@@ -70,15 +74,18 @@ const ChatRoom = () => {
         }
     }
 
+    //Handles connection errors
     const onError = (err) => {
         console.log(err);
     }
 
+    //Updates the message state when the user types a message.
     const handleMessage = (event) => {
         const { value } = event.target;
         setUserData({ ...userData, "message": value });
     }
 
+    //Sends a public message.
     const sendValue = () => {
         if (stompClient) {
             var chatMessage = {
@@ -92,6 +99,7 @@ const ChatRoom = () => {
         }
     }
 
+    //Sends a private message.
     const sendPrivateValue = () => {
         if (stompClient) {
             var chatMessage = {
@@ -113,11 +121,13 @@ const ChatRoom = () => {
         }
     }
 
+    //Updates the username state when the user types a username.
     const handleUsername = (event) => {
         const { value } = event.target;
         setUserData({ ...userData, "username": value });
     }
 
+    //Connects the user to the WebSocket server.
     const registerUser = () => {
         connect();
     }
