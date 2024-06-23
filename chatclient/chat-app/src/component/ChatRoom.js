@@ -38,6 +38,7 @@ const ChatRoom = () => {
         };
         stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
     }
+    
 
     const onMessageReceived = (payload) => {
         var payloadData = JSON.parse(payload.body);

@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
 public class Message {
     private String senderName;
     private String receiverName;
@@ -15,3 +14,4 @@ public class Message {
     private String date;
     private Status status;
 }
+
